@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1056100835936",
+    "project_id": "ppb-fp",
+    "storage_bucket": "ppb-fp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1056100835936:android:e78cf4594ada4b2d38d905",
+        "android_client_info": {
+          "package_name": "com.example.ppb_fp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCQMtFLureIAU6vhkJhkOyVedTJ9cSJnis"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
