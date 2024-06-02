@@ -16,9 +16,11 @@ class CommentService {
     await docRef.update({'id': docRef.id});
   }
 
-  // Read comments for a specific book
+  // Get comments for a specific book
   Stream<QuerySnapshot> getCommentsStream(String bookId) {
-    return comments.where('book_id', isEqualTo: bookId).orderBy('timestamp', descending: true).snapshots();
+    return comments
+        .where('book_id', isEqualTo: bookId)
+        .snapshots();
   }
 
   // Update a comment

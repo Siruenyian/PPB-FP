@@ -15,11 +15,6 @@ class CommentsPage extends StatefulWidget {
 class _CommentsPageState extends State<CommentsPage> {
   final CommentService _commentService = CommentService();
 
-  Future<String> _getUsername(String userId) async {
-    DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('users').doc(userId).get();
-    return userDoc['username'];
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,45 +35,23 @@ class _CommentsPageState extends State<CommentsPage> {
             itemCount: comments.length,
             itemBuilder: (context, index) {
               var comment = comments[index];
-              return FutureBuilder<String>(
-                future: _getUsername(comment['user_id']),
-                builder: (context, userSnapshot) {
-                  if (userSnapshot.connectionState == ConnectionState.waiting) {
-                    return ListTile(
-                      title: Text(comment['content']),
-                      subtitle: Text('Loading user...'),
+              return ListTile(
+                title: Text(comment['content']),
+                subtitle: FutureBuilder<DocumentSnapshot>(
+                  future: FirebaseFirestore.instance.collection('users').doc(comment['user_id']).get(),
+                  builder: (context, userSnapshot) {
+                    if (userSnapshot.connectionState == ConnectionState.waiting) {
+                      return Text('Loading...');
+                    }
+                    if (userSnapshot.hasError || !userSnapshot.hasData) {
+                      return Text('Unknown user');
+                    }
+                    var userData = userSnapshot.data!;
+                    return Text(
+                      'User: ${userData['email']} \nTime: ${comment['timestamp']?.toDate() ?? 'Unknown'}',
                     );
-                  }
-                  if (userSnapshot.hasError) {
-                    return ListTile(
-                      title: Text(comment['content']),
-                      subtitle: Text('Error loading user'),
-                    );
-                  }
-                  return ListTile(
-                    title: Text(comment['content']),
-                    subtitle: Text(
-                      'User: ${userSnapshot.data} \nTime: ${comment['timestamp']?.toDate() ?? 'Unknown'}',
-                    ),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          icon: Icon(Icons.edit),
-                          onPressed: () {
-                            // Implement update comment functionality
-                          },
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.delete),
-                          onPressed: () async {
-                            await _commentService.deleteComment(comment.id);
-                          },
-                        ),
-                      ],
-                    ),
-                  );
-                },
+                  },
+                ),
               );
             },
           );
@@ -98,3 +71,4 @@ class _CommentsPageState extends State<CommentsPage> {
     );
   }
 }
+
