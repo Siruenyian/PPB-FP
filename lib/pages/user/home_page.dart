@@ -20,42 +20,9 @@ class UserHomePage extends StatelessWidget {
         ),
       ]),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'Logged In as User: ${user?.email}',
-              style: const TextStyle(fontSize: 20),
-            ),
-            SizedBox(height: 20),
-            StreamBuilder<QuerySnapshot>(
-              stream: FirebaseFirestore.instance.collection('books').snapshots(),
-              builder: (context, snapshot) {
-                if (snapshot.hasError) {
-                  return Text('Error: ${snapshot.error}');
-                }
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator();
-                }
-                final books = snapshot.data!.docs;
-                return Column(
-                  children: books.map((book) {
-                    return ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => CommentsPage(bookId: book.id),
-                          ),
-                        );
-                      },
-                      child: Text('Comments for ${book['title']}'),
-                    );
-                  }).toList(),
-                );
-              },
-            ),
-          ],
+        child: Text(
+          'Logged In as User: ${user?.email}',
+          style: const TextStyle(fontSize: 20),
         ),
       ),
     );
