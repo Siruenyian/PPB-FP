@@ -29,8 +29,12 @@ class BookService{
     return book.doc(bookUid).get();
   }
 
-  Future<QuerySnapshot> getBookByTitle(String title){
-    return book.where('title', arrayContains: title).get();
+  Stream<QuerySnapshot<Object?>> getBookByTitle(String title) {
+      final result = book
+          .where('title', isGreaterThanOrEqualTo: title)
+          .where('title', isLessThanOrEqualTo: title + '\uf8ff')
+          .snapshots();
+      return result;
   }
 
   Future<void> deleteBook(String bookUid){
