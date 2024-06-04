@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ppb_fp/services/comments.dart';
-import 'package:ppb_fp/pages/user/add_comment_page.dart';
 
 class CommentsPage extends StatefulWidget {
   final String bookId;
