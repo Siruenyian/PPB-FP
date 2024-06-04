@@ -9,6 +9,8 @@ class BorrowedBooksService{
     FirebaseFirestore.instance.collection('books');
 
   Future<void> addBook(String userUid, String bookUid) {
+    //TODO if the books already exist in the borrowed_books database, return fail
+
     return borrowedbooks.add({
       'userUid': userUid,
       'bookUid': bookUid,
