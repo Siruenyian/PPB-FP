@@ -5,7 +5,7 @@ import 'package:ppb_fp/pages/user/book_explore.dart';
 import 'package:ppb_fp/pages/user/user_books.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:ppb_fp/pages/user/comment_page.dart';
+
 
 
 class UserHomePage extends StatelessWidget {
