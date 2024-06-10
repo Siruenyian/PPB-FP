@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ppb_fp/services/comments.dart';
@@ -14,6 +15,7 @@ class CommentsPage extends StatefulWidget {
 
 class _CommentsPageState extends State<CommentsPage> {
   final CommentService _commentService = CommentService();
+  final User? currentUser = FirebaseAuth.instance.currentUser;
 
   @override
   Widget build(BuildContext context) {
@@ -48,10 +50,27 @@ class _CommentsPageState extends State<CommentsPage> {
                     }
                     var userData = userSnapshot.data!;
                     return Text(
-                      'User: ${userData['email']} \nTime: ${comment['timestamp']?.toDate() ?? 'Unknown'}',
+                      ' ${userData['email']} \n ${comment['timestamp']?.toDate() ?? 'Unknown'}',
                     );
                   },
                 ),
+                trailing: comment['user_id'] == currentUser?.uid ? Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.edit),
+                      onPressed: () {
+                        // Implement edit comment functionality
+                      },
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.delete),
+                      onPressed: () async {
+                        await _commentService.deleteComment(comment.id);
+                      },
+                    ),
+                  ],
+                ) : null,
               );
             },
           );
@@ -71,4 +90,3 @@ class _CommentsPageState extends State<CommentsPage> {
     );
   }
 }
-
