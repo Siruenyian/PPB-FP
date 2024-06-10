@@ -20,6 +20,9 @@ class _AddCommentPageState extends State<AddCommentPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Add Comment'),
+        backgroundColor: Colors.blue, // Set the title bar color to blue
+        foregroundColor: Colors.white, // Set the title text color to white
+        iconTheme: IconThemeData(color: Colors.white), // Set the app bar icon color to white
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -48,6 +51,10 @@ class _AddCommentPageState extends State<AddCommentPage> {
                 }
               },
               child: Text('Add Comment'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue, // Set the button color to blue
+                foregroundColor: Colors.white, // Set the button text color to white
+              ),
             ),
           ],
         ),

@@ -7,7 +7,6 @@ import 'package:intl/intl.dart';
 
 class CommentsPage extends StatefulWidget {
   final String bookId;
-
   CommentsPage({required this.bookId});
 
   @override
@@ -28,6 +27,9 @@ class _CommentsPageState extends State<CommentsPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Comments'),
+        backgroundColor: Colors.blue,
+        foregroundColor: Colors.white,
+        iconTheme: IconThemeData(color: Colors.white),
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: _commentService.getCommentsStream(widget.bookId),
@@ -56,7 +58,7 @@ class _CommentsPageState extends State<CommentsPage> {
                     }
                     var userData = userSnapshot.data!;
                     return Text(
-                        '${userData['email']} \n${formatDate(comment['timestamp'])}',
+                      '${userData['email']} \n${formatDate(comment['timestamp'])}',
                     );
                   },
                 ),
@@ -96,6 +98,8 @@ class _CommentsPageState extends State<CommentsPage> {
           );
         },
         child: Icon(Icons.add),
+        backgroundColor: Colors.blue,
+        foregroundColor: Colors.white,
       ),
     );
   }
