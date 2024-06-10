@@ -1,8 +1,9 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ppb_fp/services/comments.dart';
 import 'package:ppb_fp/pages/user/add_comment_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:intl/intl.dart';
 
 class CommentsPage extends StatefulWidget {
   final String bookId;
@@ -16,6 +17,11 @@ class CommentsPage extends StatefulWidget {
 class _CommentsPageState extends State<CommentsPage> {
   final CommentService _commentService = CommentService();
   final User? currentUser = FirebaseAuth.instance.currentUser;
+
+  String formatDate(Timestamp timestamp) {
+    DateTime dateTime = timestamp.toDate();
+    return DateFormat('d MMMM yyyy, HH:mm:ss').format(dateTime);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,27 +56,31 @@ class _CommentsPageState extends State<CommentsPage> {
                     }
                     var userData = userSnapshot.data!;
                     return Text(
-                      ' ${userData['email']} \n ${comment['timestamp']?.toDate() ?? 'Unknown'}',
+                        '${userData['email']} \n${formatDate(comment['timestamp'])}',
                     );
                   },
                 ),
-                trailing: comment['user_id'] == currentUser?.uid ? Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    IconButton(
-                      icon: Icon(Icons.edit),
-                      onPressed: () {
-                        // Implement edit comment functionality
-                      },
+                trailing: comment['user_id'] == currentUser?.uid
+                    ? PopupMenuButton<String>(
+                  onSelected: (value) async {
+                    if (value == 'edit') {
+
+                    } else if (value == 'delete') {
+                      await _commentService.deleteComment(comment.id);
+                    }
+                  },
+                  itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                    const PopupMenuItem<String>(
+                      value: 'edit',
+                      child: Text('Edit'),
                     ),
-                    IconButton(
-                      icon: Icon(Icons.delete),
-                      onPressed: () async {
-                        await _commentService.deleteComment(comment.id);
-                      },
+                    const PopupMenuItem<String>(
+                      value: 'delete',
+                      child: Text('Delete'),
                     ),
                   ],
-                ) : null,
+                )
+                    : null,
               );
             },
           );
