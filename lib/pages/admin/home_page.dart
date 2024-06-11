@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:ppb_fp/services/book_service.dart';
 import 'package:flutter/material.dart';
 import 'package:ppb_fp/pages/admin/admin_books.dart';
 import 'package:ppb_fp/pages/admin/admin_delete_expired_books.dart';
@@ -13,6 +14,11 @@ class AdminHomePage extends StatefulWidget {
 }
 
 class _AdminHomePageState extends State<AdminHomePage> {
+  final TextEditingController titletextController = TextEditingController();
+  final TextEditingController coverurltextController = TextEditingController();
+  final TextEditingController desctextController = TextEditingController();
+  final TextEditingController authorsidController = TextEditingController();
+  final BookService firestoreService = BookService();
   final user = FirebaseAuth.instance.currentUser;
   int currentIndex = 0;
   PageController pageController = PageController(initialPage: 0);

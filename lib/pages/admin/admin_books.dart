@@ -147,73 +147,85 @@ class _AdminBooksPageState extends State<AdminBooksPage> {
         stream: bookService.getBooksStream(),
         builder: (context, snapshot) {
           // if data, get
-          if (snapshot.hasData) {
-            List BooksList = snapshot.data!.docs;
-            return ListView.separated(
-              itemCount: BooksList.length,
-              separatorBuilder: (context, index) {
-                return const SizedBox(
-                  height: 20,
-                );
-              },
-              itemBuilder: (context, index) {
-                // get each, get Book drom doc, display list
-                DocumentSnapshot document = BooksList[index];
-                String docID = document.id;
-                Map<String, dynamic> data =
-                    document.data() as Map<String, dynamic>;
-                String bookText = data['title'];
-                return GestureDetector(
-                    onTap: () {
-                      // Navigate to the CommentsScreen when the tile is tapped
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => CommentsPage(bookId: docID),
-                        ),
-                      );
-                    },
-                    child: ListTile(
-                      title: Row(
-                        children: [
-                          Image.network(
-                            data[
-                                'cover_url'], // Assuming you have the image URL in your data
-                            width: 50,
-                            height: 50,
-                            fit: BoxFit.cover,
-                          ),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: Text(
-                                '${bookText} by author ${data['author_id']}'),
-                          ),
-                        ],
-                      ),
-                      tileColor: Colors.grey[200],
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          IconButton(
-                            onPressed: () {
-                              openBookBox(context, docID: docID);
-                            },
-                            icon: const Icon(Icons.edit),
-                          ),
-                          IconButton(
-                            onPressed: () {
-                              bookService.deleteBook(docID);
-                            },
-                            icon: const Icon(Icons.delete),
-                          ),
-                        ],
-                      ),
-                    ));
-              },
-            );
-          } else {
-            return const Text('No Books here...');
+          if (!snapshot.hasData) {
+            return Center(child: CircularProgressIndicator());
           }
+
+          if (snapshot.data!.docs.isEmpty) {
+            return Center(child: Text('No books found.'));
+          }
+
+          List BooksList = snapshot.data!.docs;
+          return ListView.separated(
+            itemCount: BooksList.length,
+            separatorBuilder: (context, index) {
+              return const SizedBox(
+                height: 20,
+              );
+            },
+            itemBuilder: (context, index) {
+              // get each, get Book drom doc, display list
+              DocumentSnapshot document = BooksList[index];
+              String docID = document.id;
+              Map<String, dynamic> data =
+                  document.data() as Map<String, dynamic>;
+              String bookText = data['title'];
+              String coverUrl = data['cover_url'] ?? '';
+              return GestureDetector(
+                  onTap: () {
+                    // Navigate to the CommentsScreen when the tile is tapped
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => CommentsPage(bookId: docID),
+                      ),
+                    );
+                  },
+                  child: ListTile(
+                    title: Row(
+                      children: [
+                        coverUrl.isNotEmpty
+                            ? Image.network(
+                                coverUrl,
+                                height: 300,
+                                fit: BoxFit.cover,
+                              )
+                            : Container(
+                                height: 300,
+                                color: Colors.grey,
+                                child: Center(
+                                  child: Text('No Image Available',
+                                      style: TextStyle(color: Colors.white)),
+                                ),
+                              ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                              '${bookText} by author ${data['author_id']}'),
+                        ),
+                      ],
+                    ),
+                    tileColor: Colors.grey[200],
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            openBookBox(context, docID: docID);
+                          },
+                          icon: const Icon(Icons.edit),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            bookService.deleteBook(docID);
+                          },
+                          icon: const Icon(Icons.delete),
+                        ),
+                      ],
+                    ),
+                  ));
+            },
+          );
         },
       ),
     );
