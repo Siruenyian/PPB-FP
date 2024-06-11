@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:ppb_fp/services/user_book_service.dart';
+import 'package:ppb_fp/pages/user/view_book_page.dart';
 
 class BorrowedBooksPage extends StatefulWidget {
   final String userUid;
@@ -48,7 +49,7 @@ class _BorrowedBooksPageState extends State<BorrowedBooksPage> {
               itemCount: books.length,
               itemBuilder: (context, index) {
                 final book = books[index];
-                final bookId = book.id;
+                final bookUid = book.id;
                 final title = book['title'] ?? 'No title';
                 final authorUid = book['author_id'] ?? 'No author';
                 final coverUrl = book['cover_url'] ?? '';
@@ -60,18 +61,15 @@ class _BorrowedBooksPageState extends State<BorrowedBooksPage> {
                   title: Text(title),
                   subtitle: Text(authorUid),
                   trailing: IconButton(
-                    icon: Icon(Icons.delete),
-                    onPressed: () async {
-                      await borrowedBooksService.removeBook(widget.userUid, bookId);
-                      _fetchBorrowedBooks(); // Refresh the list after deletion
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Book removed successfully')),
-                      );
-                    },
+                    icon: Icon(Icons.library_books),
+                    onPressed: () { Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ViewBookPage(bookUid: bookUid), // Replace ViewBooksPage with your desired view books page
+                      ),
+                    );
+                  }
                   ),
-                  onTap: () {
-                    // Handle book tap
-                  },
                 );
               },
             );

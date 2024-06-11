@@ -1,16 +1,15 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:ppb_fp/services/book_service.dart';
+import 'package:ppb_fp/services/user_book_service.dart';
 
 class AdminExpiredBooks extends StatefulWidget {
-  const AdminExpiredBooks({super.key});
+  const AdminExpiredBooks({Key? key}) : super(key: key);
 
   @override
   State<AdminExpiredBooks> createState() => _AdminExpiredBooksState();
 }
 
 class _AdminExpiredBooksState extends State<AdminExpiredBooks> {
-  final BookService bookService = BookService();
+  final BorrowedBooksService bookService = BorrowedBooksService();
 
   @override
   Widget build(BuildContext context) {
@@ -18,45 +17,53 @@ class _AdminExpiredBooksState extends State<AdminExpiredBooks> {
       appBar: AppBar(
         title: Text('Delete Expired Books'),
       ),
-      body: StreamBuilder<QuerySnapshot>(
-        // stream: bookService.fetchExpiredBooks(),
-        stream: bookService.getBooksStream(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return Center(child: CircularProgressIndicator());
-          }
-
-          if (snapshot.data!.docs.isEmpty) {
-            return Center(child: Text('No expired books found.'));
-          }
-
-          return ListView(
-            children: snapshot.data!.docs.map((doc) {
-              var data = doc.data() as Map<String, dynamic>;
-              String bookTitle = data['title'];
-              String author = data['author_id'];
-              String imageUrl = data['cover_url'];
-              String docID = doc.id;
-
-              return ListTile(
-                leading: Image.network(
-                  imageUrl,
-                  width: 50,
-                  height: 50,
-                  fit: BoxFit.cover,
-                ),
-                title: Text('$bookTitle by $author'),
-                trailing: IconButton(
-                  icon: Icon(Icons.delete),
-                  onPressed: () async {
-                    await bookService.deleteBook(docID);
-                  },
-                ),
-              );
-            }).toList(),
-          );
-        },
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton(
+              onPressed: () {
+                deleteAllExpiredBooks();
+              },
+              child: Text('Delete All Expired Books')
+            ),
+            SizedBox(height: 20),
+            FutureBuilder<int>(
+              future: bookService.getTotalExpiredBooks(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return CircularProgressIndicator();
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                } else {
+                  int totalExpiredBooks = snapshot.data ?? 0;
+                  return Text(
+                    'Total Expired Books: $totalExpiredBooks',
+                    style: TextStyle(fontSize: 18),
+                  );
+                }
+              },
+            ),
+          ],
+        ),
       ),
     );
+  }
+
+  Future<void> deleteAllExpiredBooks() async {
+    try {
+      await bookService.deleteAllExpiredBooks();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('All expired books deleted successfully'),
+        ),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error deleting expired books: $e'),
+        ),
+      );
+    }
   }
 }
