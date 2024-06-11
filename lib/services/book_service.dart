@@ -1,40 +1,43 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+class BookService {
+  final CollectionReference book =
+      FirebaseFirestore.instance.collection('books');
 
-class BookService{
-  final CollectionReference book = 
-    FirebaseFirestore.instance.collection('books');
-
-  Future<void> addBook(String title, String coverUrl, String authorUid, String description) {
+  Future<void> addBook(String title, String coverUrl, String authorUid,
+      String description, String citation) {
     return book.add({
       'title': title,
       'cover_url': coverUrl,
       'author_id': authorUid,
       'description': description,
+      'citation': citation,
       'timestamp': DateTime.now()
     });
   }
 
-  Future<void> updateBook(String bookUid, String title, String coverUrl, String authorUid, String description) {
+  Future<void> updateBook(String bookUid, String title, String coverUrl,
+      String authorUid, String description, String citation) {
     return book.doc(bookUid).update({
       'title': title,
       'cover_url': coverUrl,
       'author_id': authorUid,
       'description': description,
+      'citation': citation,
       'timestamp': DateTime.now()
     });
   }
-  
-  Future<DocumentSnapshot> getBookByID(String bookUid){
+
+  Future<DocumentSnapshot> getBookByID(String bookUid) {
     return book.doc(bookUid).get();
   }
 
   Stream<QuerySnapshot<Object?>> getBookByTitle(String title) {
-      final result = book
-          .where('title', isGreaterThanOrEqualTo: title)
-          .where('title', isLessThanOrEqualTo: title + '\uf8ff')
-          .snapshots();
-      return result;
+    final result = book
+        .where('title', isGreaterThanOrEqualTo: title)
+        .where('title', isLessThanOrEqualTo: title + '\uf8ff')
+        .snapshots();
+    return result;
   }
 
   Future<void> deleteBook(String bookUid) async {
@@ -50,19 +53,27 @@ class BookService{
       return await FirebaseFirestore.instance.collection('books').doc(bookUid).delete();
     } catch (e) {
 
+
+
+      for (DocumentSnapshot doc in snapshot.docs) {
+        await doc.reference.delete();
+      }
+      return await FirebaseFirestore.instance
+          .collection('books')
+          .doc(bookUid)
+          .delete();
+    } catch (e) {
+
       print('Error deleting book: $e');
       throw e;
     }
   }
 
-
-  Stream<QuerySnapshot> getBooksStream(){
+  Stream<QuerySnapshot> getBooksStream() {
     final notesStream = book.snapshots().map((snapshot) {
       return snapshot;
     });
 
     return notesStream;
   }
-
-
 }
