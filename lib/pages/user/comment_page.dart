@@ -66,7 +66,15 @@ class _CommentsPageState extends State<CommentsPage> {
                     ? PopupMenuButton<String>(
                   onSelected: (value) async {
                     if (value == 'edit') {
-
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => AddCommentPage(
+                            bookId: widget.bookId,
+                            comment: comment, // Pass the comment for editing
+                          ),
+                        ),
+                      );
                     } else if (value == 'delete') {
                       await _commentService.deleteComment(comment.id);
                     }
