@@ -33,7 +33,7 @@ class UserHomePage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'Logged In as User: ${user?.email}',
+              'Welcome User: ${user?.email}',
               style: const TextStyle(fontSize: 20),
             ),
             const SizedBox(height: 20),
@@ -44,6 +44,10 @@ class UserHomePage extends StatelessWidget {
                   MaterialPageRoute(builder: (context) => BooksPage()),
                 );
               },
+              style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.blue,
+              foregroundColor: Colors.white,
+              ),
               child: const Text('Explore Books Exists'),
             ),
             const SizedBox(height: 20),
@@ -54,6 +58,10 @@ class UserHomePage extends StatelessWidget {
                   MaterialPageRoute(builder: (context) => BorrowedBooksPage(userUid: user!.uid)),
                 );
               },
+              style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.blue,
+              foregroundColor: Colors.white,
+              ),
               child: const Text('View Borrowed Books'),
             ),
             const SizedBox(height: 20),
@@ -64,6 +72,10 @@ class UserHomePage extends StatelessWidget {
                   MaterialPageRoute(builder: (context) => AddBookPage(userUid: user!.uid)),
                 );
               },
+              style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.blue,
+              foregroundColor: Colors.white,
+              ),
               child: const Text('Borrow Books'),
             ),
           ],

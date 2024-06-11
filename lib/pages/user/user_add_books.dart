@@ -118,6 +118,10 @@ class _AddBookPageState extends State<AddBookPage> {
               trailing: ElevatedButton(
                 onPressed: () => _handleBorrowBook(book.id),
                 child: Text('Borrow'),
+                style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue,
+                foregroundColor: Colors.white,
+                ),
               ),
             );
           },
@@ -136,9 +140,10 @@ class _AddBookPageState extends State<AddBookPage> {
       );
       // Consider updating UI to reflect borrowed book (e.g., disable button)
     } catch (error) {
+      String errorMessage = error.toString().replaceFirst('Exception: ', '');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Error borrowing book: $error'),
+          content: Text(errorMessage),
         ),
       );
     }
