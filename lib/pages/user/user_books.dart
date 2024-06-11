@@ -18,7 +18,13 @@ class _BorrowedBooksPageState extends State<BorrowedBooksPage> {
   @override
   void initState() {
     super.initState();
-    _borrowedBooksFuture = borrowedBooksService.getBooksByUserID(widget.userUid);
+    _fetchBorrowedBooks();
+  }
+
+  void _fetchBorrowedBooks() {
+    setState(() {
+      _borrowedBooksFuture = borrowedBooksService.getBooksByUserID(widget.userUid);
+    });
   }
 
   @override
@@ -42,6 +48,7 @@ class _BorrowedBooksPageState extends State<BorrowedBooksPage> {
               itemCount: books.length,
               itemBuilder: (context, index) {
                 final book = books[index];
+                final bookId = book.id;
                 final title = book['title'] ?? 'No title';
                 final authorUid = book['author_id'] ?? 'No author';
                 final coverUrl = book['cover_url'] ?? '';
@@ -52,6 +59,16 @@ class _BorrowedBooksPageState extends State<BorrowedBooksPage> {
                       : null,
                   title: Text(title),
                   subtitle: Text(authorUid),
+                  trailing: IconButton(
+                    icon: Icon(Icons.delete),
+                    onPressed: () async {
+                      await borrowedBooksService.removeBook(widget.userUid, bookId);
+                      _fetchBorrowedBooks(); // Refresh the list after deletion
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Book removed successfully')),
+                      );
+                    },
+                  ),
                   onTap: () {
                     // Handle book tap
                   },
