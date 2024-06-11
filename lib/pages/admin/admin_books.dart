@@ -16,6 +16,7 @@ class _AdminBooksPageState extends State<AdminBooksPage> {
   final TextEditingController coverurltextController = TextEditingController();
   final TextEditingController desctextController = TextEditingController();
   final TextEditingController authorsidController = TextEditingController();
+  final TextEditingController citationController = TextEditingController();
   final BookService bookService = BookService();
   final user = FirebaseAuth.instance.currentUser;
 
@@ -23,22 +24,19 @@ class _AdminBooksPageState extends State<AdminBooksPage> {
     FirebaseAuth.instance.signOut();
   }
 
-  void openBookBox(BuildContext context, {String? docID}) {
-    String selectedAuthorId = '';
-    List<DropdownMenuItem<String>> authorItems = [
-      const DropdownMenuItem<String>(
-        value: '1',
-        child: Text('Sault Goodman'),
-      ),
-      const DropdownMenuItem<String>(
-        value: '2',
-        child: Text('Walter White'),
-      ),
-      const DropdownMenuItem<String>(
-        value: '3',
-        child: Text('Steven'),
-      ),
-    ];
+  void openBookBox(BuildContext context, {String? docID}) async {
+    if (docID != null) {
+      // Fetch the book data
+      DocumentSnapshot doc = await bookService.getBookByID(docID);
+      if (doc.exists) {
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+        titletextController.text = data['title'] ?? '';
+        coverurltextController.text = data['cover_url'] ?? '';
+        desctextController.text = data['description'] ?? '';
+        authorsidController.text = data['author_id'] ?? '';
+        citationController.text = data['citation'] ?? '';
+      }
+    }
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -90,6 +88,17 @@ class _AdminBooksPageState extends State<AdminBooksPage> {
                   ),
                 ),
               ),
+              const SizedBox(height: 8.0),
+              TextField(
+                controller: citationController,
+                cursorColor: Colors.blue,
+                decoration: const InputDecoration(
+                  labelText: 'Citation',
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.blue),
+                  ),
+                ),
+              ),
             ],
           ),
         ),
@@ -106,6 +115,7 @@ class _AdminBooksPageState extends State<AdminBooksPage> {
                   coverurltextController.text,
                   authorsidController.text,
                   desctextController.text,
+                  citationController.text,
                 );
               } else {
                 bookService.updateBook(
@@ -114,6 +124,7 @@ class _AdminBooksPageState extends State<AdminBooksPage> {
                   coverurltextController.text,
                   authorsidController.text,
                   desctextController.text,
+                  citationController.text,
                 );
               }
               titletextController.clear();
@@ -122,7 +133,7 @@ class _AdminBooksPageState extends State<AdminBooksPage> {
               authorsidController.clear();
               Navigator.pop(context);
             },
-            child: const Text('Add'),
+            child: Text(docID == null ? 'Add' : 'Update'),
           ),
         ],
       ),
@@ -136,7 +147,7 @@ class _AdminBooksPageState extends State<AdminBooksPage> {
         backgroundColor: Colors.blue,
         tooltip: 'Press me to add Books!',
         onPressed: () {
-          openBookBox(context);
+          openBookBox(context, docID: null);
         },
         child: const Icon(
           Icons.add,
@@ -187,11 +198,12 @@ class _AdminBooksPageState extends State<AdminBooksPage> {
                         coverUrl.isNotEmpty
                             ? Image.network(
                                 coverUrl,
-                                height: 300,
+                                height: 100,
                                 fit: BoxFit.cover,
                               )
                             : Container(
-                                height: 300,
+                                height: 50,
+                                width: 50,
                                 color: Colors.grey,
                                 child: Center(
                                   child: Text('No Image Available',
