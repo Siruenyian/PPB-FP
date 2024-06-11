@@ -9,6 +9,8 @@ class BorrowedBooksService{
     FirebaseFirestore.instance.collection('books');
 
   Future<void> addBook(String userUid, String bookUid) {
+    //TODO if the books already exist in the borrowed_books database, return fail
+
     return borrowedbooks.add({
       'userUid': userUid,
       'bookUid': bookUid,
@@ -27,8 +29,8 @@ class BorrowedBooksService{
 
   Future<List<DocumentSnapshot>> getBooksByUserID(String userUid) async {
 
-    final borrowedBooksSnapshot = await borrowedbooks.where('user_id', isEqualTo: userUid).get();
-    final List<String> bookUids = borrowedBooksSnapshot.docs.map((doc) => doc['book_id'] as String).toList();
+    final borrowedBooksSnapshot = await borrowedbooks.where('userUid', isEqualTo: userUid).get();
+    final List<String> bookUids = borrowedBooksSnapshot.docs.map((doc) => doc['bookUid'] as String).toList();
 
     List<DocumentSnapshot> books = [];
       
