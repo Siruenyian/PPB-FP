@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:ppb_fp/services/firestore_book.dart';
+import 'package:ppb_fp/services/book_service.dart';
 import 'package:flutter/material.dart';
 
 class AdminHomePage extends StatefulWidget {
@@ -15,7 +15,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
   final TextEditingController coverurltextController = TextEditingController();
   final TextEditingController desctextController = TextEditingController();
   final TextEditingController authorsidController = TextEditingController();
-  final FireStoreService firestoreService = FireStoreService();
+  final BookService firestoreService = BookService();
   final user = FirebaseAuth.instance.currentUser;
 
   void signUserOut() {

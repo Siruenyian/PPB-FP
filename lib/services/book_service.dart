@@ -29,13 +29,32 @@ class BookService{
     return book.doc(bookUid).get();
   }
 
-  Future<QuerySnapshot> getBookByTitle(String title){
-    return book.where('title', arrayContains: title).get();
+  Stream<QuerySnapshot<Object?>> getBookByTitle(String title) {
+      final result = book
+          .where('title', isGreaterThanOrEqualTo: title)
+          .where('title', isLessThanOrEqualTo: title + '\uf8ff')
+          .snapshots();
+      return result;
   }
 
-  Future<void> deleteBook(String bookUid){
-    return book.doc(bookUid).delete();
+Future<void> deleteBook(String bookUid) async {
+  try {
+    QuerySnapshot snapshot = await FirebaseFirestore.instance
+        .collection('borrowed_books')
+        .where('bookUid', isEqualTo: bookUid)
+        .get();
+    
+    for (DocumentSnapshot doc in snapshot.docs) {
+      await doc.reference.delete();
+    } 
+    return await FirebaseFirestore.instance.collection('books').doc(bookUid).delete();
+  } catch (e) {
+
+    print('Error deleting book: $e');
+    throw e;
   }
+}
+
 
   Stream<QuerySnapshot> getBooksStream(){
     final notesStream = book.snapshots().map((snapshot) {

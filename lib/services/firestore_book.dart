@@ -36,7 +36,22 @@ class FireStoreService {
   }
 
   // D
-  Future<void> deleteBook(String docID) {
-    return notes.doc(docID).delete();
+  Future<void> deleteBook(String bookUid) async {
+    try {
+      QuerySnapshot snapshot = await FirebaseFirestore.instance
+          .collection('borrowed_books')
+          .where('bookUid', isEqualTo: bookUid)
+          .get();
+      
+      for (DocumentSnapshot doc in snapshot.docs) {
+        await doc.reference.delete();
+      } 
+      return await FirebaseFirestore.instance.collection('books_dummy').doc(bookUid).delete();
+    } catch (e) {
+
+      print('Error deleting book: $e');
+      throw e;
+    }
   }
+  
 }
