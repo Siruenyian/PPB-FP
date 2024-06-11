@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:ppb_fp/services/user_book_service.dart';
+import 'package:ppb_fp/pages/user/comment_page.dart';
 
 class BorrowedBooksPage extends StatefulWidget {
   final String userUid;
@@ -59,15 +60,31 @@ class _BorrowedBooksPageState extends State<BorrowedBooksPage> {
                       : null,
                   title: Text(title),
                   subtitle: Text(authorUid),
-                  trailing: IconButton(
-                    icon: Icon(Icons.delete),
-                    onPressed: () async {
-                      await borrowedBooksService.removeBook(widget.userUid, bookId);
-                      _fetchBorrowedBooks(); // Refresh the list after deletion
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Book removed successfully')),
-                      );
-                    },
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: Icon(Icons.add_comment),
+                        onPressed: () async {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => CommentsPage(bookId: book.id),
+                            ),
+                          );
+                        },
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.delete),
+                        onPressed: () async {
+                          await borrowedBooksService.removeBook(widget.userUid, bookId);
+                          _fetchBorrowedBooks(); // Refresh the list after deletion
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Book removed successfully')),
+                          );
+                        },
+                      ),
+                    ],
                   ),
                   onTap: () {
                     // Handle book tap
