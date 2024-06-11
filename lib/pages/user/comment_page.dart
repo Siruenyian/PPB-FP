@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ppb_fp/services/comments.dart';
 import 'package:ppb_fp/pages/user/add_comment_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:intl/intl.dart';
 
 class CommentsPage extends StatefulWidget {
   final String bookId;
-
   CommentsPage({required this.bookId});
 
   @override
@@ -14,12 +15,21 @@ class CommentsPage extends StatefulWidget {
 
 class _CommentsPageState extends State<CommentsPage> {
   final CommentService _commentService = CommentService();
+  final User? currentUser = FirebaseAuth.instance.currentUser;
+
+  String formatDate(Timestamp timestamp) {
+    DateTime dateTime = timestamp.toDate();
+    return DateFormat('d MMMM yyyy, HH:mm:ss').format(dateTime);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Comments'),
+        backgroundColor: Colors.blue,
+        foregroundColor: Colors.white,
+        iconTheme: IconThemeData(color: Colors.white),
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: _commentService.getCommentsStream(widget.bookId),
@@ -48,10 +58,39 @@ class _CommentsPageState extends State<CommentsPage> {
                     }
                     var userData = userSnapshot.data!;
                     return Text(
-                      'User: ${userData['email']} \nTime: ${comment['timestamp']?.toDate() ?? 'Unknown'}',
+                      '${userData['email']} \n${formatDate(comment['timestamp'])}',
                     );
                   },
                 ),
+                trailing: comment['user_id'] == currentUser?.uid
+                    ? PopupMenuButton<String>(
+                  onSelected: (value) async {
+                    if (value == 'edit') {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => AddCommentPage(
+                            bookId: widget.bookId,
+                            comment: comment, // Pass the comment for editing
+                          ),
+                        ),
+                      );
+                    } else if (value == 'delete') {
+                      await _commentService.deleteComment(comment.id);
+                    }
+                  },
+                  itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                    const PopupMenuItem<String>(
+                      value: 'edit',
+                      child: Text('Edit'),
+                    ),
+                    const PopupMenuItem<String>(
+                      value: 'delete',
+                      child: Text('Delete'),
+                    ),
+                  ],
+                )
+                    : null,
               );
             },
           );
@@ -67,8 +106,9 @@ class _CommentsPageState extends State<CommentsPage> {
           );
         },
         child: Icon(Icons.add),
+        backgroundColor: Colors.blue,
+        foregroundColor: Colors.white,
       ),
     );
   }
 }
-
