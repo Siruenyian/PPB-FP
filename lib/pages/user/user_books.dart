@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:ppb_fp/services/user_book_service.dart';
 import 'package:ppb_fp/pages/user/view_book_page.dart';
+import 'package:ppb_fp/pages/user/comment_page.dart';
 
 class BorrowedBooksPage extends StatefulWidget {
   final String userUid;
@@ -32,7 +33,10 @@ class _BorrowedBooksPageState extends State<BorrowedBooksPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Borrowed Books'),
+        title: Text('Borrowed Books', style: 
+        TextStyle(fontSize: 18, color: Colors.white)
+        ,),
+        backgroundColor: Colors.blue,
       ),
       body: FutureBuilder<List<DocumentSnapshot>>(
         future: _borrowedBooksFuture,
@@ -60,15 +64,32 @@ class _BorrowedBooksPageState extends State<BorrowedBooksPage> {
                       : null,
                   title: Text(title),
                   subtitle: Text(authorUid),
-                  trailing: IconButton(
-                    icon: Icon(Icons.library_books),
-                    onPressed: () { Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ViewBookPage(bookUid: bookUid), // Replace ViewBooksPage with your desired view books page
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: Icon(Icons.library_books),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ViewBookPage(bookUid: bookUid), // Replace ViewBooksPage with your desired view books page
+                            ),
+                          );
+                        },
                       ),
-                    );
-                  }
+                      IconButton(
+                        icon: Icon(Icons.comment),
+                        onPressed: ()  {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => CommentsPage(bookId: bookUid), // Replace ViewBooksPage with your desired view books page
+                            ),
+                          );
+                        },
+                      ),
+                    ],
                   ),
                 );
               },

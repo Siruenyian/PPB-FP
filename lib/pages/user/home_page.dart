@@ -21,6 +21,7 @@ class UserHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.blue,
         actions: [
           IconButton(
             onPressed: signUserOut,
@@ -34,7 +35,7 @@ class UserHomePage extends StatelessWidget {
           children: [
             Text(
               'Welcome User: ${user?.email}',
-              style: const TextStyle(fontSize: 20),
+              style: const TextStyle(fontSize: 18),
             ),
             const SizedBox(height: 20),
             ElevatedButton(

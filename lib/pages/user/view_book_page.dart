@@ -18,7 +18,9 @@ class _ViewBookPageState extends State<ViewBookPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Book Details'),
+        title: Text('Book Details',style: 
+        TextStyle(fontSize: 18, color: Colors.white)),
+        backgroundColor: Colors.blue,
       ),
       body: FutureBuilder<DocumentSnapshot>(
         future: bookService.getBookByID(widget.bookUid),
@@ -34,6 +36,7 @@ class _ViewBookPageState extends State<ViewBookPage> {
             String title = data['title'] ?? 'Unknown';
             String coverUrl = data['cover_url'] ?? '';
             String authorUid = data['author_id'] ?? 'Unknown';
+            String citation  = data['citation'] ?? '';
             String description = data['description'] ?? '';
 
             return SingleChildScrollView(
@@ -50,18 +53,23 @@ class _ViewBookPageState extends State<ViewBookPage> {
                     ),
                   SizedBox(height: 20),
                   Text(
-                    'Title: $title',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    '$title',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: 10),
                   Text(
-                    'Author ID: $authorUid',
-                    style: TextStyle(fontSize: 16),
+                    'Written By: $authorUid',
+                    style: TextStyle(fontSize: 11),
                   ),
                   SizedBox(height: 10),
                   Text(
                     'Description: $description',
-                    style: TextStyle(fontSize: 16),
+                    style: TextStyle(fontSize: 14),
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    'Citations: $citation',
+                    style: TextStyle(fontSize: 14),
                   ),
                 ],
               ),

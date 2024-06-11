@@ -52,18 +52,7 @@ class BookService {
       } 
       return await FirebaseFirestore.instance.collection('books').doc(bookUid).delete();
     } catch (e) {
-
-
-
-      for (DocumentSnapshot doc in snapshot.docs) {
-        await doc.reference.delete();
-      }
-      return await FirebaseFirestore.instance
-          .collection('books')
-          .doc(bookUid)
-          .delete();
-    } catch (e) {
-
+      
       print('Error deleting book: $e');
       throw e;
     }

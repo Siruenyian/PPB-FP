@@ -67,7 +67,9 @@ class _AddBookPageState extends State<AddBookPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Book Library'),
+        backgroundColor: Colors.blue,
+        title: Text('Book Library',style: 
+        TextStyle(fontSize: 18, color: Colors.white)),
       ),
       body: Column(
         children: [
