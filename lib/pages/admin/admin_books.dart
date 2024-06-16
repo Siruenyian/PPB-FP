@@ -171,7 +171,7 @@ class _AdminBooksPageState extends State<AdminBooksPage> {
             itemCount: BooksList.length,
             separatorBuilder: (context, index) {
               return const SizedBox(
-                height: 20,
+                height: 10,
               );
             },
             itemBuilder: (context, index) {
@@ -217,7 +217,7 @@ class _AdminBooksPageState extends State<AdminBooksPage> {
                         ),
                       ],
                     ),
-                    tileColor: Colors.grey[200],
+                    tileColor: Colors.grey[100],
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:ppb_fp/services/book_service.dart';
 
 class ViewBookPage extends StatefulWidget {
@@ -73,6 +75,19 @@ class _ViewBookPageState extends State<ViewBookPage> {
                     'Citations: $citation',
                     style: const TextStyle(fontSize: 14),
                   ),
+                  const SizedBox(height: 5),
+                  ElevatedButton(
+                      onPressed: () async {
+                        await Clipboard.setData(
+                            ClipboardData(text: "$citation"));
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue,
+                        foregroundColor: Colors.white,
+                      ),
+                      child: Text(
+                        'Copy Citation',
+                      )),
                 ],
               ),
             );
