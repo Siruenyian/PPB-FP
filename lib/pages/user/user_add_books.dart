@@ -66,11 +66,6 @@ class _AddBookPageState extends State<AddBookPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.blue,
-        title: Text('Book Library',style: 
-        TextStyle(fontSize: 18, color: Colors.white)),
-      ),
       body: Column(
         children: [
           Padding(
@@ -79,9 +74,10 @@ class _AddBookPageState extends State<AddBookPage> {
               decoration: InputDecoration(
                 hintText: 'Search Books',
                 suffixIcon: IconButton(
-                  icon: Icon(Icons.search),
+                  icon: const Icon(Icons.search),
                   onPressed: () => setState(() {
-                    bookListState.setSearchResults = bookService.getBookByTitle(_searchText);
+                    bookListState.setSearchResults =
+                        bookService.getBookByTitle(_searchText);
                   }),
                 ),
               ),
@@ -105,10 +101,11 @@ class _AddBookPageState extends State<AddBookPage> {
         }
 
         if (!snapshot.hasData) {
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         }
 
-        final books = snapshot.data!.docs.map((doc) => Book.fromSnapshot(doc)).toList();
+        final books =
+            snapshot.data!.docs.map((doc) => Book.fromSnapshot(doc)).toList();
         return ListView.builder(
           itemCount: books.length,
           itemBuilder: (context, index) {
@@ -116,13 +113,14 @@ class _AddBookPageState extends State<AddBookPage> {
             return ListTile(
               title: Text(book.title),
               subtitle: book.author != null ? Text(book.author!) : null,
-              leading: book.imageUrl != null ? Image.network(book.imageUrl!) : null,
+              leading:
+                  book.imageUrl != null ? Image.network(book.imageUrl!) : null,
               trailing: ElevatedButton(
                 onPressed: () => _handleBorrowBook(book.id),
-                child: Text('Borrow'),
+                child: const Text('Borrow'),
                 style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,
-                foregroundColor: Colors.white,
+                  backgroundColor: Colors.blue,
+                  foregroundColor: Colors.white,
                 ),
               ),
             );
@@ -136,7 +134,7 @@ class _AddBookPageState extends State<AddBookPage> {
     try {
       await bookListState.borrowBooksService.addBook(widget.userUid, bookUid);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Book borrowed successfully!'),
         ),
       );

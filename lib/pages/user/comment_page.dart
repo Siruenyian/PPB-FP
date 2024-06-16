@@ -26,10 +26,10 @@ class _CommentsPageState extends State<CommentsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Comments'),
+        title: const Text('Comments'),
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
-        iconTheme: IconThemeData(color: Colors.white),
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: _commentService.getCommentsStream(widget.bookId),
@@ -38,7 +38,7 @@ class _CommentsPageState extends State<CommentsPage> {
             return Center(child: Text('Error: ${snapshot.error}'));
           }
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }
           final comments = snapshot.data!.docs;
           return ListView.builder(
@@ -48,13 +48,17 @@ class _CommentsPageState extends State<CommentsPage> {
               return ListTile(
                 title: Text(comment['content']),
                 subtitle: FutureBuilder<DocumentSnapshot>(
-                  future: FirebaseFirestore.instance.collection('users').doc(comment['user_id']).get(),
+                  future: FirebaseFirestore.instance
+                      .collection('users')
+                      .doc(comment['user_id'])
+                      .get(),
                   builder: (context, userSnapshot) {
-                    if (userSnapshot.connectionState == ConnectionState.waiting) {
-                      return Text('Loading...');
+                    if (userSnapshot.connectionState ==
+                        ConnectionState.waiting) {
+                      return const Text('Loading...');
                     }
                     if (userSnapshot.hasError || !userSnapshot.hasData) {
-                      return Text('Unknown user');
+                      return const Text('Unknown user');
                     }
                     var userData = userSnapshot.data!;
                     return Text(
@@ -64,32 +68,34 @@ class _CommentsPageState extends State<CommentsPage> {
                 ),
                 trailing: comment['user_id'] == currentUser?.uid
                     ? PopupMenuButton<String>(
-                  onSelected: (value) async {
-                    if (value == 'edit') {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => AddCommentPage(
-                            bookId: widget.bookId,
-                            comment: comment, // Pass the comment for editing
+                        onSelected: (value) async {
+                          if (value == 'edit') {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => AddCommentPage(
+                                  bookId: widget.bookId,
+                                  comment:
+                                      comment, // Pass the comment for editing
+                                ),
+                              ),
+                            );
+                          } else if (value == 'delete') {
+                            await _commentService.deleteComment(comment.id);
+                          }
+                        },
+                        itemBuilder: (BuildContext context) =>
+                            <PopupMenuEntry<String>>[
+                          const PopupMenuItem<String>(
+                            value: 'edit',
+                            child: Text('Edit'),
                           ),
-                        ),
-                      );
-                    } else if (value == 'delete') {
-                      await _commentService.deleteComment(comment.id);
-                    }
-                  },
-                  itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-                    const PopupMenuItem<String>(
-                      value: 'edit',
-                      child: Text('Edit'),
-                    ),
-                    const PopupMenuItem<String>(
-                      value: 'delete',
-                      child: Text('Delete'),
-                    ),
-                  ],
-                )
+                          const PopupMenuItem<String>(
+                            value: 'delete',
+                            child: Text('Delete'),
+                          ),
+                        ],
+                      )
                     : null,
               );
             },
@@ -105,7 +111,7 @@ class _CommentsPageState extends State<CommentsPage> {
             ),
           );
         },
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
       ),

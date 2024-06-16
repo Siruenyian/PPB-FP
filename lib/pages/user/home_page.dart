@@ -7,11 +7,19 @@ import 'package:ppb_fp/pages/user/user_add_books.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-
-
-class UserHomePage extends StatelessWidget {
+class UserHomePage extends StatefulWidget {
   UserHomePage({super.key});
+
+  @override
+  State<UserHomePage> createState() => _UserHomePageState();
+}
+
+class _UserHomePageState extends State<UserHomePage> {
   final user = FirebaseAuth.instance.currentUser;
+
+  int currentIndex = 0;
+
+  PageController pageController = PageController(initialPage: 0);
 
   void signUserOut() {
     FirebaseAuth.instance.signOut();
@@ -22,6 +30,10 @@ class UserHomePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue,
+        title: Text(
+          'User: ${user?.email}',
+          style: const TextStyle(fontSize: 18, color: Colors.white),
+        ),
         actions: [
           IconButton(
             onPressed: signUserOut,
@@ -29,58 +41,54 @@ class UserHomePage extends StatelessWidget {
           ),
         ],
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'Welcome User: ${user?.email}',
-              style: const TextStyle(fontSize: 18),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => BooksPage()),
-                );
-              },
-              style: ElevatedButton.styleFrom(
+      body: PageView(
+        controller: pageController,
+        pageSnapping: true,
+        onPageChanged: (value) {
+          setState(() {
+            currentIndex = value;
+          });
+        },
+        scrollDirection: Axis.horizontal,
+        children: [
+          BooksPage(),
+          AddBookPage(userUid: user!.uid),
+          BorrowedBooksPage(userUid: user!.uid),
+        ],
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const [
+          BottomNavigationBarItem(
               backgroundColor: Colors.blue,
-              foregroundColor: Colors.white,
+              icon: Icon(
+                Icons.book,
+                color: Colors.white,
               ),
-              child: const Text('Explore Books Exists'),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => BorrowedBooksPage(userUid: user!.uid)),
-                );
-              },
-              style: ElevatedButton.styleFrom(
+              label: "Explore Books"),
+          BottomNavigationBarItem(
               backgroundColor: Colors.blue,
-              foregroundColor: Colors.white,
+              icon: Icon(
+                Icons.bookmark_add,
+                color: Colors.white,
               ),
-              child: const Text('View Borrowed Books'),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => AddBookPage(userUid: user!.uid)),
-                );
-              },
-              style: ElevatedButton.styleFrom(
+              label: "Book Library"),
+          BottomNavigationBarItem(
               backgroundColor: Colors.blue,
-              foregroundColor: Colors.white,
+              icon: Icon(
+                Icons.bookmark_added_sharp,
+                color: Colors.white,
               ),
-              child: const Text('Borrow Books'),
-            ),
-          ],
-        ),
+              label: "Borrowed Books"),
+        ],
+        type: BottomNavigationBarType.shifting,
+        currentIndex: currentIndex,
+        onTap: (value) {
+          setState(() {
+            pageController.animateToPage(value,
+                duration: Durations.medium1, curve: Curves.bounceInOut);
+            // currentIndex = value;
+          });
+        },
       ),
     );
   }

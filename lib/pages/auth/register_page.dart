@@ -65,7 +65,7 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blueGrey[100],
+      backgroundColor: Colors.white,
       body: SafeArea(
           child: Center(
         child: SingleChildScrollView(
@@ -78,14 +78,14 @@ class _RegisterPageState extends State<RegisterPage> {
               Icon(
                 Icons.book,
                 size: 100,
-                color: Colors.blue.shade300,
+                color: Colors.blue,
               ),
               const SizedBox(
                 height: 25,
               ),
-              const Text(
-                "Let's create new memories!",
-                style: TextStyle(color: Colors.blueGrey, fontSize: 16),
+              Text(
+                "Let's borrow some books!",
+                style: TextStyle(color: Colors.grey.shade700, fontSize: 20),
               ),
               const SizedBox(
                 height: 16,
@@ -128,7 +128,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     Expanded(
                         child: Divider(
                       thickness: 0.5,
-                      color: Colors.blueGrey.shade500,
+                      color: Colors.grey.shade500,
                     )),
                     Padding(
                       padding: const EdgeInsets.symmetric(
@@ -136,13 +136,13 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                       child: Text(
                         'or',
-                        style: TextStyle(color: Colors.blueGrey.shade700),
+                        style: TextStyle(color: Colors.grey.shade700),
                       ),
                     ),
                     Expanded(
                         child: Divider(
                       thickness: 0.5,
-                      color: Colors.blueGrey.shade500,
+                      color: Colors.grey.shade500,
                     ))
                   ],
                 ),
@@ -168,7 +168,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 children: [
                   Text(
                     'Already a member?',
-                    style: TextStyle(color: Colors.blueGrey.shade700),
+                    style: TextStyle(color: Colors.grey.shade700),
                   ),
                   const SizedBox(
                     width: 4.0,

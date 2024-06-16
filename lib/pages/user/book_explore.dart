@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ppb_fp/pages/user/comment_page.dart';
 import 'package:ppb_fp/services/book_service.dart';
 import 'package:ppb_fp/pages/user/view_book_page.dart';
 
@@ -15,11 +16,6 @@ class _BooksPageState extends State<BooksPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-      backgroundColor: Colors.blue,
-        title: Text('Explore Books',style: 
-        TextStyle(fontSize: 18, color: Colors.white)),
-      ),
       body: Column(
         children: [
           Padding(
@@ -28,7 +24,7 @@ class _BooksPageState extends State<BooksPage> {
               decoration: InputDecoration(
                 hintText: 'Search Books',
                 suffixIcon: IconButton(
-                  icon: Icon(Icons.search),
+                  icon: const Icon(Icons.search),
                   onPressed: () async {
                     // Perform search action
                     setState(() {});
@@ -52,14 +48,16 @@ class _BooksPageState extends State<BooksPage> {
 
   Widget _buildBookList() {
     return StreamBuilder<QuerySnapshot>(
-      stream: _searchText.isEmpty ? bookService.getBooksStream() : bookService.getBookByTitle(_searchText),
+      stream: _searchText.isEmpty
+          ? bookService.getBooksStream()
+          : bookService.getBookByTitle(_searchText),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError) {
           return Center(child: Text('Error: ${snapshot.error}'));
         } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-          return Center(child: Text('No books found'));
+          return const Center(child: Text('No books found'));
         } else {
           final books = snapshot.data!.docs;
           return ListView.builder(
@@ -70,60 +68,73 @@ class _BooksPageState extends State<BooksPage> {
               final bookUid = book.id;
               final coverUrl = book['cover_url'] ?? '';
 
-              return Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Card(
-                  elevation: 5,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      SizedBox(height: 16),
-                      coverUrl.isNotEmpty
-                          ? Image.network(
-                              coverUrl,
-                              height: 300,
-                              fit: BoxFit.cover,
-                            )
-                          : Container(
-                              height: 300,
-                              color: Colors.grey,
-                              child: Center(
-                                child: Text('No Image Available', style: TextStyle(color: Colors.white)),
+              return GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ViewBookPage(bookUid: bookUid),
+                    ),
+                  );
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Card(
+                    color: Colors.white,
+                    elevation: 5,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const SizedBox(height: 16),
+                        coverUrl.isNotEmpty
+                            ? Image.network(
+                                coverUrl,
+                                height: 300,
+                                fit: BoxFit.cover,
+                              )
+                            : Container(
+                                height: 300,
+                                color: Colors.grey,
+                                child: const Center(
+                                  child: Text('No Image Available',
+                                      style: TextStyle(color: Colors.white)),
+                                ),
                               ),
-                            ),
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          children: [
-                            Text(
-                              title,
-                              style: TextStyle(
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold,
+                        Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            children: [
+                              Text(
+                                title,
+                                style: const TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                textAlign: TextAlign.center,
                               ),
-                              textAlign: TextAlign.center,
-                            ),
-                            SizedBox(height: 8),
-                            SizedBox(height: 16),
-                            ElevatedButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => ViewBookPage(bookUid: bookUid),
-                                  ),
-                                );
-                              },
-                              style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.blue,
-                              foregroundColor: Colors.white,
+                              const SizedBox(height: 8),
+                              const SizedBox(height: 16),
+                              ElevatedButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          CommentsPage(bookId: bookUid),
+                                    ),
+                                  );
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.blue,
+                                  foregroundColor: Colors.white,
+                                ),
+                                child: const Text('What others say'),
                               ),
-                              child: Text('View Book'),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               );

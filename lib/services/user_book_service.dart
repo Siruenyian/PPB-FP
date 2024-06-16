@@ -1,44 +1,45 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+class BorrowedBooksService {
+  final CollectionReference borrowedbooks =
+      FirebaseFirestore.instance.collection('borrowed_books');
 
-class BorrowedBooksService{
-  final CollectionReference borrowedbooks = 
-    FirebaseFirestore.instance.collection('borrowed_books');
-  
-  final CollectionReference booksCollection = 
-    FirebaseFirestore.instance.collection('books');
+  final CollectionReference booksCollection =
+      FirebaseFirestore.instance.collection('books');
 
   Future<void> addBook(String userUid, String bookUid) async {
-  // Check if the book is already borrowed
-  final isBorrowed = await isBookBorrowed(userUid, bookUid);
+    // Check if the book is already borrowed
+    final isBorrowed = await isBookBorrowed(userUid, bookUid);
     if (isBorrowed) {
       throw Exception('Book is already borrowed');
     }
 
-  // If the book is not already borrowed, add it to the borrowed books collection
-    await borrowedbooks.add({
-      'userUid': userUid,
-      'bookUid': bookUid,
-      'timestamp': DateTime.now()
-    });
+    // If the book is not already borrowed, add it to the borrowed books collection
+    await borrowedbooks.add(
+        {'userUid': userUid, 'bookUid': bookUid, 'timestamp': DateTime.now()});
   }
 
   Future<void> removeBook(String userUid, String bookUid) {
-    return borrowedbooks.where('userUid', isEqualTo: userUid)
-      .where('bookUid', isEqualTo: bookUid).get().then((snapshot) {
-        for (DocumentSnapshot doc in snapshot.docs) {
-          doc.reference.delete();
-        }
-      });
+    return borrowedbooks
+        .where('userUid', isEqualTo: userUid)
+        .where('bookUid', isEqualTo: bookUid)
+        .get()
+        .then((snapshot) {
+      for (DocumentSnapshot doc in snapshot.docs) {
+        doc.reference.delete();
+      }
+    });
   }
 
   Future<List<DocumentSnapshot>> getBooksByUserID(String userUid) async {
-
-    final borrowedBooksSnapshot = await borrowedbooks.where('userUid', isEqualTo: userUid).get();
-    final List<String> bookUids = borrowedBooksSnapshot.docs.map((doc) => doc['bookUid'] as String).toList();
+    final borrowedBooksSnapshot =
+        await borrowedbooks.where('userUid', isEqualTo: userUid).get();
+    final List<String> bookUids = borrowedBooksSnapshot.docs
+        .map((doc) => doc['bookUid'] as String)
+        .toList();
 
     List<DocumentSnapshot> books = [];
-      
+
     for (String bookUid in bookUids) {
       final bookSnapshot = await booksCollection.doc(bookUid).get();
       if (bookSnapshot.exists) {
@@ -69,7 +70,7 @@ class BorrowedBooksService{
   Future<void> deleteAllExpiredBooks() async {
     try {
       final now = DateTime.now();
-      final expiredDate = now.subtract(Duration(minutes: 5));
+      final expiredDate = now.subtract(const Duration(minutes: 5));
 
       final QuerySnapshot snapshot = await FirebaseFirestore.instance
           .collection('borrowed_books')
@@ -86,10 +87,11 @@ class BorrowedBooksService{
   }
 
   Future<bool> isBookBorrowed(String userUid, String bookUid) async {
-    final snapshot = await borrowedbooks.where('userUid', isEqualTo: userUid)
-      .where('bookUid', isEqualTo: bookUid).get();
+    final snapshot = await borrowedbooks
+        .where('userUid', isEqualTo: userUid)
+        .where('bookUid', isEqualTo: bookUid)
+        .get();
 
     return snapshot.docs.isNotEmpty;
   }
-
 }

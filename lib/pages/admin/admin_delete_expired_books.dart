@@ -22,11 +22,16 @@ class _AdminExpiredBooksState extends State<AdminExpiredBooks> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ElevatedButton(
-              onPressed: () {
-                deleteAllExpiredBooks();
-              },
-              child: Text('Delete All Expired Books')
-            ),
+                onPressed: () {
+                  deleteAllExpiredBooks();
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  foregroundColor: Colors.white,
+                ),
+                child: Text(
+                  'Delete All Expired Books',
+                )),
             SizedBox(height: 20),
             FutureBuilder<int>(
               future: bookService.getTotalExpiredBooks(),

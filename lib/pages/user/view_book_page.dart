@@ -12,35 +12,36 @@ class ViewBookPage extends StatefulWidget {
 }
 
 class _ViewBookPageState extends State<ViewBookPage> {
-  final BookService bookService = BookService(); // Assuming you have a BookService instance
+  final BookService bookService =
+      BookService(); // Assuming you have a BookService instance
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Book Details',style: 
-        TextStyle(fontSize: 18, color: Colors.white)),
+        title: const Text('Book Details',
+            style: TextStyle(fontSize: 18, color: Colors.white)),
         backgroundColor: Colors.blue,
       ),
       body: FutureBuilder<DocumentSnapshot>(
         future: bookService.getBookByID(widget.bookUid),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (!snapshot.hasData || snapshot.data == null) {
-            return Center(child: Text('No data found'));
+            return const Center(child: Text('No data found'));
           } else {
             var data = snapshot.data!.data() as Map<String, dynamic>;
             String title = data['title'] ?? 'Unknown';
             String coverUrl = data['cover_url'] ?? '';
             String authorUid = data['author_id'] ?? 'Unknown';
-            String citation  = data['citation'] ?? '';
+            String citation = data['citation'] ?? '';
             String description = data['description'] ?? '';
 
             return SingleChildScrollView(
-              padding: EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -51,25 +52,26 @@ class _ViewBookPageState extends State<ViewBookPage> {
                       width: double.infinity,
                       fit: BoxFit.cover,
                     ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   Text(
                     '$title',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                        fontSize: 20, fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   Text(
                     'Written By: $authorUid',
-                    style: TextStyle(fontSize: 11),
+                    style: const TextStyle(fontSize: 11),
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   Text(
                     'Description: $description',
-                    style: TextStyle(fontSize: 14),
+                    style: const TextStyle(fontSize: 14),
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   Text(
                     'Citations: $citation',
-                    style: TextStyle(fontSize: 14),
+                    style: const TextStyle(fontSize: 14),
                   ),
                 ],
               ),

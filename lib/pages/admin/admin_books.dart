@@ -159,11 +159,11 @@ class _AdminBooksPageState extends State<AdminBooksPage> {
         builder: (context, snapshot) {
           // if data, get
           if (!snapshot.hasData) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: const CircularProgressIndicator());
           }
 
           if (snapshot.data!.docs.isEmpty) {
-            return Center(child: Text('No books found.'));
+            return const Center(child: Text('No books found.'));
           }
 
           List BooksList = snapshot.data!.docs;
@@ -205,7 +205,7 @@ class _AdminBooksPageState extends State<AdminBooksPage> {
                                 height: 50,
                                 width: 50,
                                 color: Colors.grey,
-                                child: Center(
+                                child: const Center(
                                   child: Text('No Image Available',
                                       style: TextStyle(color: Colors.white)),
                                 ),

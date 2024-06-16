@@ -25,28 +25,23 @@ class _BorrowedBooksPageState extends State<BorrowedBooksPage> {
 
   void _fetchBorrowedBooks() {
     setState(() {
-      _borrowedBooksFuture = borrowedBooksService.getBooksByUserID(widget.userUid);
+      _borrowedBooksFuture =
+          borrowedBooksService.getBooksByUserID(widget.userUid);
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Borrowed Books', style: 
-        TextStyle(fontSize: 18, color: Colors.white)
-        ,),
-        backgroundColor: Colors.blue,
-      ),
       body: FutureBuilder<List<DocumentSnapshot>>(
         future: _borrowedBooksFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text('No borrowed books found'));
+            return const Center(child: Text('No borrowed books found'));
           } else {
             final books = snapshot.data!;
             return ListView.builder(
@@ -60,7 +55,8 @@ class _BorrowedBooksPageState extends State<BorrowedBooksPage> {
 
                 return ListTile(
                   leading: coverUrl.isNotEmpty
-                      ? Image.network(coverUrl, width: 50, height: 50, fit: BoxFit.cover)
+                      ? Image.network(coverUrl,
+                          width: 50, height: 50, fit: BoxFit.cover)
                       : null,
                   title: Text(title),
                   subtitle: Text(authorUid),
@@ -68,23 +64,27 @@ class _BorrowedBooksPageState extends State<BorrowedBooksPage> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       IconButton(
-                        icon: Icon(Icons.library_books),
+                        icon: const Icon(Icons.library_books),
                         onPressed: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => ViewBookPage(bookUid: bookUid), // Replace ViewBooksPage with your desired view books page
+                              builder: (context) => ViewBookPage(
+                                  bookUid:
+                                      bookUid), // Replace ViewBooksPage with your desired view books page
                             ),
                           );
                         },
                       ),
                       IconButton(
-                        icon: Icon(Icons.comment),
-                        onPressed: ()  {
+                        icon: const Icon(Icons.comment),
+                        onPressed: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => CommentsPage(bookId: bookUid), // Replace ViewBooksPage with your desired view books page
+                              builder: (context) => CommentsPage(
+                                  bookId:
+                                      bookUid), // Replace ViewBooksPage with your desired view books page
                             ),
                           );
                         },

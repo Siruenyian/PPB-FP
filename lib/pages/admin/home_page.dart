@@ -4,10 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:ppb_fp/pages/admin/admin_books.dart';
 import 'package:ppb_fp/pages/admin/admin_delete_expired_books.dart';
 
-import 'package:ppb_fp/pages/user/comment_page.dart';
-
 class AdminHomePage extends StatefulWidget {
-  AdminHomePage({super.key});
+  const AdminHomePage({super.key});
 
   @override
   State<AdminHomePage> createState() => _AdminHomePageState();
@@ -65,6 +63,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
               ),
               label: "Books List"),
           BottomNavigationBarItem(
+              backgroundColor: Colors.blue,
               icon: Icon(
                 Icons.delete,
                 color: Colors.white,
@@ -84,43 +83,3 @@ class _AdminHomePageState extends State<AdminHomePage> {
     );
   }
 }
-// Column(
-//             mainAxisAlignment: MainAxisAlignment.center,
-//             children: [
-//               Text(
-//                 'Logged In as User: ${user?.email}',
-//                 style: const TextStyle(fontSize: 20),
-//               ),
-//               const SizedBox(height: 20),
-//               ElevatedButton(
-//                 style: ElevatedButton.styleFrom(
-//                   backgroundColor: Colors.blue,
-//                   foregroundColor: Colors.white,
-//                 ),
-//                 onPressed: () {
-//                   Navigator.push(
-//                     context,
-//                     MaterialPageRoute(builder: (context) => AdminBooksPage()),
-//                   );
-//                 },
-//                 child: const Text('Explore Books Exists'),
-//               ),
-//               const SizedBox(height: 20),
-//               ElevatedButton(
-//                 style: ElevatedButton.styleFrom(
-//                   backgroundColor: Colors.blue,
-//                   foregroundColor: Colors.white,
-//                 ),
-//                 onPressed: () {
-//                   Navigator.push(
-//                     context,
-//                     MaterialPageRoute(
-//                         builder: (context) => CommentsPage(
-//                               bookId: '1gkCtEwsdgaFVxf7uidm',
-//                             )),
-//                   );
-//                 },
-//                 child: const Text('Explore Books Comments'),
-//               ),
-//             ],
-//           ),
